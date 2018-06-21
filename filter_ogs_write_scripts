@@ -13,12 +13,6 @@
 #
 # for more info see <http://www.gnu.org/licenses/>
 
-# --min_sp = minimum number of species in an orthogroup (OG)
-# --ogdir  = directory with orthogroup fasta files (after running orthofinder)
-# --name = name used for output directory and scripts
-# [--threads = number of threads]
-# [--version]
-
 use strict;
 use warnings;
 use JFR::Fasta;
@@ -33,6 +27,7 @@ our $VERSION = 0.02;
 MAIN: {
     my $rh_opts = get_opts();
     my $min_sp = $rh_opts->{'min_sp'};
+    my $max_sp_occur = $rh_opts->{'max_sp_occur'} || 0;
     my $dir = $rh_opts->{'ogdir'};
     my $name = $rh_opts->{'name'};
     my $threads = $rh_opts->{'threads'} || 1;
@@ -63,6 +58,7 @@ MAIN: {
         }
         my $sp_count = scalar(keys %species);
         next unless ($sp_count >= $min_sp);
+        next if ($max_sp_occur && exceed_max_sp_occur(\%species,$max_sp_occur));
         my $ratio = $count / $sp_count;
         push @data, [$og,$count,$sp_count,$ratio];
     }
@@ -108,6 +104,15 @@ MAIN: {
     }
 }
 
+sub exceed_max_sp_occur {
+    my $rh_dat = shift;
+    my $max    = shift;
+    foreach my $count (values %{$rh_dat}) {
+        return 1 if ($count > $max);
+    }
+    return 0;
+}
+
 sub get_handles {
     my $num = shift;
     my $script_name = shift;
@@ -124,6 +129,7 @@ sub get_opts {
     my $rh_opts = {'num_scripts' => 0 };
     my $res = GetOptions ("num_scripts=i" => \$rh_opts->{'num_scripts'},
                                "min_sp=i" => \$rh_opts->{'min_sp'},
+                         "max_sp_occur=i" => \$rh_opts->{'max_sp_occur'},
                                 "ogdir=s" => \$rh_opts->{'ogdir'},
                                  "name=s" => \$rh_opts->{'name'},
                                    "help" => \$rh_opts->{'help'},
@@ -141,7 +147,7 @@ sub get_opts {
 }
 
 sub usage {
-    die "usage: $0 --ogdir=DIR_W_OG_FA_FILES --name=NAME4OUTFILES --min_sp=MIN_NUM_SPECIES --num_scripts=NUM_SCRIPTS [--threads=NUMTHREADS] [--version]\n";
+    die "usage: $0 --ogdir=DIR_W_OG_FA_FILES --name=NAME4OUTFILES --min_sp=MIN_NUM_SPECIES --num_scripts=NUM_SCRIPTS [--max_sp_occur=MAXNUMFOREACHSPECIES] [--threads=NUMTHREADS] [--version]\n";
 }
 
 __END__ 
@@ -156,7 +162,7 @@ Joseph F. Ryan <joseph.ryan@whitney.ufl.edu>
 
 =head1 SYNOPSIS
 
-filter_ogs_write_scripts --ogdir=DIR_W_OG_FA_FILES --name=NAME4OUTFILES --min_sp=MIN_NUM_SPECIES --num_scripts=NUM_SCRIPTS [--threads=NUMTHREADS] [--version]
+filter_ogs_write_scripts --ogdir=DIR_W_OG_FA_FILES --name=NAME4OUTFILES --min_sp=MIN_NUM_SPECIES --num_scripts=NUM_SCRIPTS [--max_sp_occur=MAXNUMFOREACHSPECIES] [--threads=NUMTHREADS] [--version]
 
 =head1 OPTIONS
 
@@ -172,11 +178,15 @@ name used for output directories and scripts
 
 =item B<--min_sp>
 
-minimum number of species in an orthogroup. The new fasta dir will only include those orthogroups that pass this minimum
+minimum number of species in an orthogroup. Orthogroups not meeting this requirement will not show up in the outdir or scripts.
 
 =item B<--num_scripts>
 
 divide jobs up into this many scripts. Allows chunks to be spread across servers
+
+=item B<--max_sp_occur=MAXNUMFOREACHSPECIES>
+
+maximum number of occurrences of any species in a particular orthogroup. Orthogroups that exceed this will not show up in the outdir or scripts.
 
 =item B<--help>
 
@@ -213,6 +223,5 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-=cut
 
 
