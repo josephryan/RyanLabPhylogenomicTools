@@ -67,3 +67,17 @@ sub get_fa_files {
     my @files = grep { /fa$/ } readdir($dh);
     return \@files;
 }
+
+__END__
+
+=head1 NAME
+
+B<ortho_diamond> - replace blast with diamond in a orthofinder pipeline
+
+=head1 AUTHOR
+
+Joseph F. Ryan <joseph.ryan@whitney.ufl.edu>
+
+=head1 SYNOPSIS
+
+ortho_diamond DIRECTORY OUTFILE_NAME
