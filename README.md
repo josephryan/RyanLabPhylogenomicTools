@@ -34,7 +34,7 @@ Or just copy scripts to a directory and run them like this:
 ```
    filter_ogs_write_scripts --help
    make_pdf_w_color_labels --help
-   ortho_diamond --help
+   perldoc ortho_diamond
    remove_empty_seqs --help
 ```
 
