@@ -1,0 +1,56 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Data::Dumper;
+use Getopt::Long;
+
+our $VERSION = 0.01;
+
+# TODO 
+# INTEGRATE GETOPT::LONG
+# ADD --chunks --threads --name --dir
+# IF CHUNKS (mkdir $name; create 1.sh 2.sh ... $chunks.sh)
+
+our $EVALUE = 0.001;
+
+MAIN: {
+    my $dir = $ARGV[0] or die "usage: $0 DIRECTORY OUTFILE_NAME\n";
+    my $outfile_name = $ARGV[1] or die "usage: $0 DIRECTORY OUTFILE_ NAME\n";
+    my $ra_files = get_fa_files($dir);
+    make_diamond_dbs($dir,$ra_files);
+    print_blast_cmds($dir,$ra_files,$outfile_name);
+}
+
+sub print_blast_cmds {
+    my $dir      = shift;
+    my $ra_files = shift;
+    my $outfile_name  = shift;
+    open OUT, ">$outfile_name" or die "cannot open >$outfile_name:$!";
+    foreach my $qu (@{$ra_files}) {
+        $qu =~ m/Species(\d+).fa/ or die "unexpected file: $qu";
+        my $qu_num = $1; 
+        foreach my $db (@{$ra_files}) {
+            $db =~ m/Species(\d+).fa/ or die "unexpected file: $db";
+            my $db_num = $1; 
+            print OUT "diamond blastp -d $dir/BlastDBSpecies${db_num} -q $dir/$qu -o $dir/Blast${qu_num}_${db_num}.txt -e $EVALUE -p 1 -f 6 > $dir/Blast${qu_num}_${db_num}.stdout 2> $dir/Blast${qu_num}_${db_num}.err\n";
+        }
+    }
+}
+
+sub make_diamond_dbs {
+    my $dir = shift;
+    my $ra_files = shift;
+    foreach my $file (@{$ra_files}) {
+        $file =~ m/(Species\d+).fa/ or die "unexpected file: $file";
+        my $dbname = 'BlastDB' . $1;
+        system "diamond makedb --in $dir/$file -d $dir/$dbname\n";
+    }
+}
+
+sub get_fa_files {
+    my $dir = shift;
+    opendir(my $dh, $dir) || die "cannot opendir $dir $!";
+    my @files = grep { /fa$/ } readdir($dh);
+    return \@files;
+}
