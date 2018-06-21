@@ -1,6 +1,33 @@
 # RyanLabPhylogenomicTools
 scripts used in phylogenomic analyses
 
+### INSTALL
+
+```git clone https://github.com/josephryan/RyanLabPhylogenomicTools
+
+To install these modules and scripts type the following:
+
+   perl Makefile.PL
+   make
+   make install
+   
+To install without root privelages try:
+
+   perl Makefile.PL PREFIX=/home/myuser/scripts
+   make
+   make install
+
+Or just copy scripts to a directory and run them like this:
+
+   perl ortho_diamond
+
+### HELP
+
+   filter_ogs_write_scripts --help
+   make_pdf_w_color_labels --help
+   ortho_diamond --help
+   remove_empty_seqs --help
+
 ### filter_ogs_write_scripts
 
 given a directory of fasta files (output of orthofinder), 
@@ -11,6 +38,8 @@ Allows for number of scripts to be specified for spreading jobs across servers
 
 ### make_pdf_w_color_labels
 
+requires Statistics/R.pm 
+  http://search.cpan.org/~fangly/Statistics-R-0.27/lib/Statistics/R.pm
 create pdf showing which taxa were pruned
 
 ### ortho_diamond 
