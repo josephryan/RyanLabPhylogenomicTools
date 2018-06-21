@@ -3,7 +3,7 @@ scripts used in phylogenomic analyses
 
 ### INSTALL
 
-```git clone https://github.com/josephryan/RyanLabPhylogenomicTools
+   git clone https://github.com/josephryan/RyanLabPhylogenomicTools
 
 To install these modules and scripts type the following:
 
