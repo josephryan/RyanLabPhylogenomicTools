@@ -54,7 +54,7 @@ create pdf showing which taxa were pruned
 
 ### ortho_diamond 
 
-this script is used to replace blast with diamond in a orhtofinder pipeline
+this script is used to replace blast with diamond in a orthofinder pipeline
 creates diamond databases and diamond scripts that need to be executed
 
 ### remove_empty_seqs
