@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!perl
 
 # this script requires JFR::Fasta
 # https://github.com/josephryan/JFR-PerlModules
