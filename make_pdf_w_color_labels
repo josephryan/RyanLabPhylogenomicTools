@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!perl
 
 # Copyright (C) 2017,2018; Joseph F. Ryan <joseph.ryan@whitney.ufl.edu>
 # This program is free software: you can redistribute it and/or modify
@@ -73,6 +73,22 @@ B<make_pdf_w_color_labels.pl> - create pdf showing which taxa were pruned
 =head1 AUTHOR
 
 Joseph F. Ryan <joseph.ryan@whitney.ufl.edu>
+
+=head1 SYNOPSIS
+
+make_pdf_w_color_labels --tree=TREEFILE --fasta=PRUNED_FASTA --out=PREFIX [--fan]
+
+=head1 OPTIONS
+
+=over2
+
+--tree - a treefile in newick format
+
+--fasta - a sequence file in FASTA format. This will be a subset of taxa in the treefile
+
+--out - a PDF file will be made with the prefix supplied here
+
+=back
 
 =head1 BUGS
 
